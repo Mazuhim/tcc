@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+    <persistence-unit name="GerencialServerPU">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <class>tupinamba.gerencial.core.user.User</class>
+        <class>tupinamba.gerencial.core.company.Company</class>
+        <class>tupinamba.gerencial.core.product.Product</class>
+        <class>tupinamba.gerencial.core.client.Client</class>
+        <class>tupinamba.gerencial.core.client.Address</class>
+        <class>tupinamba.gerencial.core.client.Appendix</class>
+        <class>tupinamba.gerencial.core.client.IdentyDocument</class>
+        <class>tupinamba.gerencial.core.client.Phone</class>
+        <class>tupinamba.gerencial.core.client.Policy</class>
+
+
+
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
+        <shared-cache-mode>NONE</shared-cache-mode>
+        <validation-mode>NONE</validation-mode>
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+            <property name="org.hibernate.flushMode" value="MANUAL"/>
+            <property name="show_sql" value="true"/>
+            <property name="format_sql" value="true"/>
+            <property name="hibernate.id.new_generator_mappings" value="false" />
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+        </properties>
+    </persistence-unit>
+</persistence>
