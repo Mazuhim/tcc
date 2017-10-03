@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -24,6 +23,10 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 /**
  *
@@ -55,16 +58,20 @@ public class Client implements Serializable {
     private double income;
 
     @JoinColumn(unique = true)
-    @OneToOne(mappedBy = "client", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "client", cascade = javax.persistence.CascadeType.ALL)
     private IdentyDocument document;
-
-    @OneToMany(mappedBy = "client", targetEntity = Appendix.class, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+//cascade = CascadeType.MERGE
+    @OneToMany(mappedBy = "client", targetEntity = Appendix.class, orphanRemoval = true, fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SUBSELECT)
+    @Cascade({CascadeType.SAVE_UPDATE})
     private List<Appendix> appendixList;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = javax.persistence.CascadeType.ALL)
     private Address address;
 
-    @OneToMany(mappedBy = "client", targetEntity = Phone.class, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "client", targetEntity = Phone.class, orphanRemoval = true, fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SUBSELECT)
+    @Cascade({CascadeType.SAVE_UPDATE})
     private List<Phone> phones;
 
 //    @OneToMany(mappedBy = "client", targetEntity = Appendix.class, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -167,7 +174,7 @@ public class Client implements Serializable {
         appendix.setClient(this);
         this.getAppendixList().add(appendix);
     }
-    
+
     public void removeAppendix(int idAppendix) {
         this.getAppendixList().remove(idAppendix);
     }
@@ -190,14 +197,13 @@ public class Client implements Serializable {
     public void setPhones(List<Phone> phones) {
         this.phones = phones;
     }
-    
-    public void addPhone(Phone phone)
-    {
+
+    public void addPhone(Phone phone) {
         phone.setClient(this);
-       this.getPhones().add(phone);
+        this.getPhones().add(phone);
     }
-    
-    public void removePhone(int idPhone){
+
+    public void removePhone(int idPhone) {
         this.getPhones().remove(idPhone);
     }
 

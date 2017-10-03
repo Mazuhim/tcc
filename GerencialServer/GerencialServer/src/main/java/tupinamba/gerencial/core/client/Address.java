@@ -39,7 +39,8 @@ public class Address implements Serializable {
     private String city;
     private String uf;
     private String cep;
-    
+    private String complement;
+
     @OneToMany
     private List<Client> clients;
 
@@ -121,5 +122,13 @@ public class Address implements Serializable {
     public void removeClient(int idClient)
     {
         this.getClients().remove(idClient);
+    }
+    
+    public String getComplement() {
+        return complement;
+    }
+
+    public void setComplement(String complement) {
+        this.complement = complement;
     }
 }

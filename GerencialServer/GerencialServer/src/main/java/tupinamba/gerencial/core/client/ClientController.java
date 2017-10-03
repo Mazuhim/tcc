@@ -17,6 +17,7 @@ import tupinamba.gerencial.persistence.ServiceFactory;
 import tupinamba.gerencial.server.client.dto.AddressDTO;
 import tupinamba.gerencial.server.client.dto.AppendixDTO;
 import tupinamba.gerencial.server.client.dto.ClientDTO;
+import tupinamba.gerencial.server.client.dto.ClientResponse;
 import tupinamba.gerencial.server.client.dto.IdentyDocumentDTO;
 import tupinamba.gerencial.server.client.dto.PhoneDTO;
 
@@ -39,6 +40,13 @@ public class ClientController implements AutoCloseable {
 
     public boolean load() {
         this.entities = service.findAll();
+        return this.entities != null;
+    }
+    
+    public boolean find(int idClient)
+    {
+        this.entity = this.service.find(idClient);
+        
         return this.entities != null;
     }
 
@@ -234,7 +242,6 @@ public class ClientController implements AutoCloseable {
             appendix = new Appendix();
             appendix.setName(appendixDTO.getName());
             appendix.setSize(appendixDTO.getSize());
-            appendix.setClient(entity);
         } else {
             appendix = this.service.findAppendix(appendixDTO.getIdAppendix());
         }
@@ -287,8 +294,28 @@ public class ClientController implements AutoCloseable {
     public ClientDTO toDTO(Client client) {
 
         ClientDTO clientDTO = new ClientDTO();
-
-        return null;
+        clientDTO.setCpf(client.getCpf());
+        clientDTO.setCreationDate(TimeToolkit.toString(client.getCreationDate()));
+        clientDTO.setDateBirth(TimeToolkit.toString(client.getDateBirth()));
+        
+        clientDTO.setDocument(this.documentToDTO(client.getDocument()));
+        clientDTO.setAddress(this.addressToDTO(client.getAddress()));
+        clientDTO.setAppendix(this.parseAppendixDTO(client.getAppendixList()));
+        clientDTO.setPhones(this.parsePhonesDTO(client.getPhones()));
+        
+        if (client.isHolder()) {
+            clientDTO.setHolder(client.isHolder());
+        } else{
+            clientDTO.setKinship(client.getKinship());
+        }
+        
+        clientDTO.setIdClient(client.getIdClient());
+        clientDTO.setIncome(client.getIncome());
+        clientDTO.setName(client.getName());
+        clientDTO.setOccupation(client.getOccupation());
+        clientDTO.setSex(client.getSex());
+        
+        return clientDTO;
     }
 
     private void validate() throws IssueException {
@@ -300,7 +327,7 @@ public class ClientController implements AutoCloseable {
             exception.addIssue(new Issue("CPF inválido", "Por favor digite um cpf valido para o cliente"));
         }
         for (Client entity1 : entities) {
-            if (this.entity.getCpf().equals(entity1.getCpf())) {
+            if (this.entity.getCpf().equals(entity1.getCpf()) && this.entity.getIdClient() != entity1.getIdClient()) {
                 exception.addIssue(new Issue("CPF já cadastrado", "Esse CPF já foi cadastrado, por favor verifique se esse cliente já não esta cadastrado no sistema"));
             }
         }
@@ -330,4 +357,76 @@ public class ClientController implements AutoCloseable {
         }
     }
 
+    public ClientResponse toResponse(Client c) {
+        ClientResponse clientResponse = new ClientResponse();
+
+        clientResponse.setCreationDate(TimeToolkit.toString(c.getCreationDate()));
+        clientResponse.setDateBirth(TimeToolkit.toString(c.getDateBirth()));
+        
+        if (c.isHolder()) {
+            clientResponse.setHolder(c.isHolder());
+        } else
+        {
+            clientResponse.setKinship(c.getKinship());
+        }
+        clientResponse.setIdClient(c.getIdClient());
+        clientResponse.setName(c.getName());
+        clientResponse.setOccupation(c.getOccupation());
+        
+        return clientResponse;
+    }
+
+    private IdentyDocumentDTO documentToDTO(IdentyDocument document) {
+        IdentyDocumentDTO documentDTO = new IdentyDocumentDTO(document.getIdIdentyDocument(), document.getRg(), document.getRegistryEntity(), TimeToolkit.toString(document.getExpeditionDate()));
+        
+        return documentDTO;
+    }
+
+    private AddressDTO addressToDTO(Address address) {
+        AddressDTO addressDTO = new AddressDTO();
+        
+        addressDTO.setCep(address.getCep());
+        addressDTO.setCity(address.getCity());
+        addressDTO.setComplement(address.getComplement());
+        addressDTO.setIdAddress(address.getIdAddress());
+        addressDTO.setNeighborhood(address.getNeighborhood());
+        addressDTO.setNumber(address.getNumber());
+        addressDTO.setStreet(address.getStreet());
+        addressDTO.setUf(address.getUf());
+        
+        return addressDTO;
+    }
+
+    private AppendixDTO appendixToDTO(Appendix appendix) {
+        AppendixDTO appendixDTO = new AppendixDTO(appendix.getIdAppendix(), appendix.getName(), appendix.getSize());
+        
+        return appendixDTO;
+    }
+    
+    private PhoneDTO phoneToDTO(Phone phone)
+    {
+        PhoneDTO phoneDTO = new PhoneDTO(phone.getIdPhone(), phone.getNumber(), phone.getDdd(), phone.isMainPhone());
+        
+        return phoneDTO;
+    }
+
+    private List<PhoneDTO> parsePhonesDTO(List<Phone> phones) {
+        List<PhoneDTO> phoneDtoList = new ArrayList<>();
+        
+        phones.forEach((p) -> {
+            phoneDtoList.add(this.phoneToDTO(p));
+        });
+        
+        return phoneDtoList;
+    }
+
+    private List<AppendixDTO> parseAppendixDTO(List<Appendix> appendixList) {
+        List<AppendixDTO> appendixDTOs = new ArrayList<>();
+        
+        appendixList.forEach((a) -> {
+            appendixDTOs.add(this.appendixToDTO(a));
+        });
+        
+        return appendixDTOs;
+    }
 }

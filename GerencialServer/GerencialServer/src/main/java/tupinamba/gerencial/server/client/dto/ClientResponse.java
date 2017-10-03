@@ -5,34 +5,31 @@
  */
 package tupinamba.gerencial.server.client.dto;
 
-import java.util.List;
-
 /**
  *
  * @author Mazuhim
  */
-public class ClientDTO {
+public class ClientResponse {
     
-    private int idClient;
+     private int idClient;
     private String name;
     private String kinship;
     private boolean holder;
-    private int sex;
     private String dateBirth;
     private String creationDate;
-    private String cpf;
     private String occupation;
-    private double income;
 
-    private IdentyDocumentDTO document;
+    public ClientResponse(int idClient, String name, String kinship, boolean holder, String dateBirth, String creationDate, String occupation) {
+        this.idClient = idClient;
+        this.name = name;
+        this.kinship = kinship;
+        this.holder = holder;
+        this.dateBirth = dateBirth;
+        this.creationDate = creationDate;
+        this.occupation = occupation;
+    }
 
-    private List<AppendixDTO> appendix;
-
-    private AddressDTO address;
-
-    private List<PhoneDTO> phones;
-
-    public ClientDTO() {
+    public ClientResponse() {
     }
 
     public int getIdClient() {
@@ -67,14 +64,6 @@ public class ClientDTO {
         this.holder = holder;
     }
 
-    public int getSex() {
-        return sex;
-    }
-
-    public void setSex(int sex) {
-        this.sex = sex;
-    }
-
     public String getDateBirth() {
         return dateBirth;
     }
@@ -91,59 +80,11 @@ public class ClientDTO {
         this.creationDate = creationDate;
     }
 
-    public String getCpf() {
-        return cpf;
-    }
-
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
-
     public String getOccupation() {
         return occupation;
     }
 
     public void setOccupation(String occupation) {
         this.occupation = occupation;
-    }
-
-    public double getIncome() {
-        return income;
-    }
-
-    public void setIncome(double income) {
-        this.income = income;
-    }
-
-    public IdentyDocumentDTO getDocument() {
-        return document;
-    }
-
-    public void setDocument(IdentyDocumentDTO document) {
-        this.document = document;
-    }
-
-    public List<AppendixDTO> getAppendix() {
-        return appendix;
-    }
-
-    public void setAppendix(List<AppendixDTO> appendix) {
-        this.appendix = appendix;
-    }
-
-    public AddressDTO getAddress() {
-        return address;
-    }
-
-    public void setAddress(AddressDTO address) {
-        this.address = address;
-    }
-
-    public List<PhoneDTO> getPhones() {
-        return phones;
-    }
-
-    public void setPhones(List<PhoneDTO> phones) {
-        this.phones = phones;
     }
 }
